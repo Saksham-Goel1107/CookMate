@@ -11,7 +11,7 @@ export default function Terms() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.replace('/')} style={styles.backButton}>
+        <TouchableOpacity onPress={() => router.replace('/Landing')} style={styles.backButton}>
           <Ionicons name="arrow-back" size={24} color={Colors.primary} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Terms of Service</Text>
