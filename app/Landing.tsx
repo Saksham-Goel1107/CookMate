@@ -1,9 +1,10 @@
-import { Text, View, Image, StyleSheet, TouchableOpacity } from "react-native";
-import React from "react";
-import { Marquee } from "@animatereactnative/marquee";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
 import Colors from "@/services/Colors";
-import { useLogto } from '@logto/rn';
+import { Marquee } from "@animatereactnative/marquee";
+import { useAuth } from '@clerk/clerk-expo';
+import { useRouter } from 'expo-router';
+import React from "react";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 const Landing = () => {
   const imageList = [
@@ -17,7 +18,9 @@ const Landing = () => {
     require("../assets/images/c2.jpg"),
     require("../assets/images/c3.jpg"),
   ];
-  const { signIn } = useLogto();
+  const { isSignedIn } = useAuth();
+  const router = useRouter();
+
   return (
     <GestureHandlerRootView>
       <View>
@@ -72,19 +75,46 @@ const Landing = () => {
           Generate Recipies in seconds with the power of Ai
         </Text>
         <TouchableOpacity
-          onPress={async () => {
-            const redirectUri =
-              __DEV__
-          ? 'exp://192.168.29.254:8081'
-          : 'CookMate://callback';
-            await signIn(redirectUri);
+          onPress={() => {
+            if (!isSignedIn) {
+              router.push('/sign-in');
+            }
+            if (isSignedIn) {
+              router.push('/(tabs)/Home');
+            }
           }}
           style={styles.button}
         >
           <Text style={{ textAlign: "center", color: Colors.white, fontSize: 17, fontWeight: "700" }}>
-            Get Started
+            {isSignedIn ? "Let's Cook!" : "Get Started"}
           </Text>
         </TouchableOpacity>
+      <View style={{ marginTop: 20, alignItems: "center" }}>
+        <Text style={{ fontSize: 12, color: Colors.GRAY, textAlign: "center" }}>
+          By continuing, you agree to our{" "}
+          <Text
+            style={{ color: Colors.primary, textDecorationLine: "underline" }}
+            onPress={() => router.push('/terms')}
+          >
+            Terms of Service
+          </Text>
+          {", "}
+          <Text
+            style={{ color: Colors.primary, textDecorationLine: "underline" }}
+            onPress={() => router.push('/privacy')}
+          >
+            Privacy Policy
+          </Text>
+          {" and "}
+          <Text
+            style={{ color: Colors.primary, textDecorationLine: "underline" }}
+            onPress={() => router.push('/consent')}
+          >
+            Consent
+          </Text>
+          .
+        </Text>
+      </View>
       </View>
     </GestureHandlerRootView>
   );
